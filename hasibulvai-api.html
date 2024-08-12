@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Data Display</title>
+    <style>
+        .data-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .data-box h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Population Data</h1>
+    <div id="data-list"></div>
+    <script>
+        // Define the API endpoint
+        const apiUrl = 'https://datausa.io/api/data?drilldowns=Nation&measures=Population';
+
+        // Function to fetch and display data
+        async function fetchAndDisplayData() {
+            try {
+                // Fetch data from the API
+                const response = await fetch(apiUrl);
+
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Parse the JSON data
+                const data = await response.json();
+
+                // Get the container where we will display the data
+                const dataList = document.getElementById('data-list');
+
+                // Check if the data contains the expected structure
+                if (data && data.data && data.data.length > 0) {
+                    // Iterate over all items in the data array
+                    data.data.forEach(item => {
+                        // Create a container for each data item
+                        const dataBox = document.createElement('div');
+                        dataBox.className = 'data-box';
+
+                        // Populate the data box with the current item
+                        dataBox.innerHTML = `
+                    <h2>Population Data</h2>
+                    <p><strong>Nation:</strong> ${item.Nation}</p>
+                    <p><strong>Population:</strong> ${item.Population}</p>
+                `;
+
+                        // Append the data box to the container
+                        dataList.appendChild(dataBox);
+                    });
+                } else {
+                    dataList.innerHTML = '<p>No data available.</p>';
+                }
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        // Call the function to fetch and display data
+        fetchAndDisplayData();
+
+
+    </script>
+</body>
+
+</html>
