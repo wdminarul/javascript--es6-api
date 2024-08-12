@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        .weather-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .weather-box img {
+            width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Current Weather</h1>
+    <div class="weather-box">
+        <p id="location">Location: Loading...</p>
+        <p id="weather">Weather: Loading...</p>
+        <img id="cloud-image" src="" alt="Cloud Image">
+    </div>
+
+    <script>
+        // Your OpenWeatherMap API key
+        const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+
+        // Elements to update
+        const locationElement = document.getElementById('location');
+        const weatherElement = document.getElementById('weather');
+        const cloudImageElement = document.getElementById('cloud-image');
+
+        // Function to get current location
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(fetchWeatherData, handleError);
+            } else {
+                locationElement.textContent = 'Geolocation is not supported by this browser.';
+            }
+        }
+
+        // Function to handle geolocation errors
+        function handleError(error) {
+            locationElement.textContent = `Error getting location: ${error.message}`;
+        }
+
+        // Function to fetch weather data
+        async function fetchWeatherData(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Construct the API URL
+            const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+            try {
+                // Fetch weather data
+                const response = await fetch(weatherApiUrl);
+                const data = await response.json();
+
+                // Update location and weather elements
+                locationElement.textContent = `Location: ${data.name}, ${data.sys.country}`;
+                weatherElement.textContent = `Weather: ${data.weather[0].description}, Temperature: ${data.main.temp}°C`;
+
+                // Set cloud image based on weather condition
+                cloudImageElement.src = getCloudImageUrl(data.weather[0].main);
+
+            } catch (error) {
+                weatherElement.textContent = 'Error fetching weather data.';
+                console.error('Error fetching weather data:', error);
+            }
+        }
+
+        // Function to get the URL of the cloud image based on weather condition
+        function getCloudImageUrl(weatherCondition) {
+            switch (weatherCondition) {
+                case 'Clouds':
+                    return 'https://www.example.com/cloud-image.png'; // Replace with an actual cloud image URL
+                // Add other cases for different weather conditions if needed
+                default:
+                    return 'https://www.example.com/default-image.png'; // Replace with a default image URL
+            }
+        }
+
+        // Start the process
+        getCurrentLocation();
+
+    </script>
+</body>
+
+</html>
