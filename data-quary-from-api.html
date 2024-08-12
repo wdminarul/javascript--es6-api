@@ -1,50 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Api Data</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        h1{
+            text-align: center;
+            color: green;
+        }
+        .user-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-box h2 {
+            margin-top: 0;
+        }
+
+        .user-box p {
+            margin: 5px 0;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>User List</h1>
-    <ul id="user-list"></ul>
+    <div class="main">
+        <h1>User Data collect from An Api</h1>
+    <div id="user-list" class="user-list">
+
+    </div>
+    </div>
 
 
     <script>
         // Define the API endpoint
-const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+        const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
-// Function to fetch and display data
-async function fetchAndDisplayUsers() {
-    try {
-        // Fetch data from the API
-        const response = await fetch(apiUrl);
+        // Function to fetch and display data
+        async function fetchAndDisplayUsers() {
+            try {
+                // Fetch data from the API
+                const response = await fetch(apiUrl);
 
-        // Check if the response is OK
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Parse the JSON data
+                const users = await response.json();
+
+                // Get the list element where we will display the users
+                const userList = document.getElementById('user-list');
+
+
+                // Create and append list items to the list
+                users.forEach(user => {
+                    const userBox = document.createElement('div');
+                    userBox.className = 'user-box';
+
+                    // Create and append the user details
+                    userBox.innerHTML = `
+                <h2>${user.name}</h2>
+                <p><strong>Username:</strong> ${user.username}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Address:</strong> ${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}</p>
+            `;
+            userList.appendChild(userBox)
+                });
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
         }
 
-        // Parse the JSON data
-        const users = await response.json();
-
-        // Get the list element where we will display the users
-        const userList = document.getElementById('user-list');
-
-        // Create and append list items to the list
-        users.forEach(user => {
-            const listItem = document.createElement('li');
-            listItem.textContent = user.name;
-            userList.appendChild(listItem);
-        });
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-    }
-}
-
-// Call the function to fetch and display users
-fetchAndDisplayUsers();
+        // Call the function to fetch and display users
+        fetchAndDisplayUsers();
 
     </script>
 </body>
+
 </html>
