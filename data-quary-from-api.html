@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Data</title>
+</head>
+<body>
+    <h1>User List</h1>
+    <ul id="user-list"></ul>
+
+
+    <script>
+        // Define the API endpoint
+const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+// Function to fetch and display data
+async function fetchAndDisplayUsers() {
+    try {
+        // Fetch data from the API
+        const response = await fetch(apiUrl);
+
+        // Check if the response is OK
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Parse the JSON data
+        const users = await response.json();
+
+        // Get the list element where we will display the users
+        const userList = document.getElementById('user-list');
+
+        // Create and append list items to the list
+        users.forEach(user => {
+            const listItem = document.createElement('li');
+            listItem.textContent = user.name;
+            userList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
+
+// Call the function to fetch and display users
+fetchAndDisplayUsers();
+
+    </script>
+</body>
+</html>
